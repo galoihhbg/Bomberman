@@ -1,5 +1,10 @@
 package uet.oop.bomberman;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Group;
@@ -57,13 +62,21 @@ public class BombermanGame extends Application {
         };
         timer.start();
 
-        createMap();
+        try {
+            createMap();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         Entity bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
         entities.add(bomberman);
     }
 
-    public void createMap() {
+    public void createMap() throws Exception {
+        FileReader fr = new FileReader("res\\levels\\Level1.txt");
+        BufferedReader br = new BufferedReader(fr);
+        String line = br.readLine();
+        String parts[] = line.split(" ");
         for (int i = 0; i < WIDTH; i++) {
             for (int j = 0; j < HEIGHT; j++) {
                 Entity object;
