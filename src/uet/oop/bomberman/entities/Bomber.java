@@ -7,15 +7,34 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.input.*;
 import javafx.scene.*;
+import java.util.List;
+import java.util.ArrayList;
+
 import uet.oop.bomberman.graphics.*;
+import uet.oop.bomberman.entities.Bomb;
 
 public class Bomber extends Entity {
 	Sprite[] player_down = {Sprite.player_down, Sprite.player_down_1, Sprite.player_down_2};
 	Sprite[] player_up = {Sprite.player_up, Sprite.player_up_1, Sprite.player_up_2};
 	Sprite[] player_right = {Sprite.player_right, Sprite.player_right_1, Sprite.player_right_2};
 	Sprite[] player_left = {Sprite.player_left, Sprite.player_left_1, Sprite.player_left_2};
+	private boolean right, left, up, down;
+	private int frame;
+	private boolean isRunning;
+	private int speed;
+	private int sizeBombStock;
+	public List<Entity> bombs = new ArrayList<>();
+    
     public Bomber(int x, int y, Image img) {
         super( x, y, img);
+        this.right = false;
+        this.left = false;
+        this.up = false;
+        this.down = true;
+        frame = 0;
+        isRunning = false;
+        speed = 3;
+        sizeBombStock = 1;
     }
     /*
      * Doi trang thai cho Bomber
@@ -24,60 +43,143 @@ public class Bomber extends Entity {
     	img = sprite.getFxImage();
     }
     
-    public void move(Scene scene) {
+    /*
+     * Getter and Setter Method
+     */
+    public int getSpeed() {
+    	return speed;
+    }
+    
+    public void setSpeed(int speed) {
+    	this.speed = speed;
+    }
+    
+    public List<Entity> getBombs() {
+    	return bombs;
+    }
+    
+    public boolean isMovedto(int[][] tile, int nextX, int nextY) {
+    	int size = Sprite.SCALED_SIZE;
+
+        int nextX_1 = (nextX) / size;
+        int nextY_1 = nextY / size;
+
+        int nextX_2 = (nextX + size - 10) / size;
+        int nextY_2 = nextY / size;
+
+        int nextX_3 = nextX / size;
+        int nextY_3 = (nextY + size - 2) / size;
+
+        int nextX_4 = (nextX + size - 10) / size;
+        int nextY_4 = (nextY + size - 2) / size;
+        
+        return !((tile[nextY_1][nextX_1] == 1 ||
+                (tile[nextY_2][nextX_2] == 1 ||
+                (tile[nextY_3][nextX_3] == 1 ||
+                (tile[nextY_4][nextX_4] == 1)))));
+    }
+    
+    public void KeyPressed(Scene scene) {
     	scene.setOnKeyPressed(event-> {
         	switch(event.getCode()) {
         	case S:
-        		y = y + 10;
-        		for (Sprite sprite:player_down) {
-        			ChangeImg(sprite);
-        		}
+        		up = false;
+        		down = true;
+        		left = false;
+        		right = false;
+        		isRunning = true;
         		break;
         	case A:
-        		x = x - 10;
-        		for (Sprite sprite:player_left) {
-        			ChangeImg(sprite);
-        		}
+        		up = false;
+        		down = false;
+        		left = true;
+        		right = false;
+        		isRunning = true;
         		break;
         	case W:
-        		y = y - 10;
-        		for (Sprite sprite:player_up) {
-        			ChangeImg(sprite);
-        		}
+        		up = true;
+        		down = false;
+        		left = false;
+        		right = false;
+        		isRunning = true;
         		break;
         	case D:
-        		x = x + 10;
-        		for (Sprite sprite:player_right) {
-        			ChangeImg(sprite);
-        		}
+        		up = false;
+        		down = false;
+        		left = false;
+        		right = true;
+        		isRunning = true;
         		break;
+        	case SPACE:
+        		if (bombs.size() < sizeBombStock) {
+        			int bombx =(x + 10) / Sprite.SCALED_SIZE;
+        			int bomby =(y + 10) / Sprite.SCALED_SIZE;
+        			Bomb bomb = new Bomb(bombx, bomby, Sprite.bomb.getFxImage(), true);
+        			bombs.add(bomb);
+        		}
         	default:
         		break;
         	}
         }
         );
-        
+    }
+    
+    void show(Scene scene, int[][] tile) {
+    	if (isRunning) {
+    		frame++;
+    		if (frame > 2) frame = 0;
+    		if (right) {
+        		ChangeImg(player_right[frame]);
+        		if (isMovedto(tile, x + speed, y))x = x + speed;
+        	}
+        	if (left) {
+        		ChangeImg(player_left[frame]);
+        		if (isMovedto(tile, x - speed, y)) x = x - speed;
+        	}
+        	if (up) {
+        		ChangeImg(player_up[frame]);
+        		if (isMovedto(tile, x, y - speed)) y = y - speed;
+        	}
+        	if (down) {
+        		ChangeImg(player_down[frame]);
+        		if (isMovedto(tile, x, y + speed)) y = y + speed;
+        	}
+    	}
+    }
+    
+    public void KeyReleased(Scene scene) {
         scene.setOnKeyReleased(event-> {
         	switch(event.getCode()) {
         	case W:
-        		ChangeImg(Sprite.player_up);
+        		up = false;
         		break;
         	case D:
-        		ChangeImg(Sprite.player_right);
+        		right = false;
         		break;
         	case S:
-        		ChangeImg(Sprite.player_down);
+        		down = false;
         		break;
         	case A:
-        		ChangeImg(Sprite.player_left);
+        		left = false;
         		break;
+        	case SPACE:
+        		if (bombs.size() < sizeBombStock) {
+        			int bombx =(x + 10) / Sprite.SCALED_SIZE * Sprite.SCALED_SIZE;
+        			int bomby =(y + 10) / Sprite.SCALED_SIZE * Sprite.SCALED_SIZE;
+        			Bomb bomb = new Bomb(bombx, bomby, Sprite.bomb.getFxImage(), true);
+        			bombs.add(bomb);
+        		}
         	default:
         		break;
         	}
         });
     }
+    
     @Override
-    public void update(Scene scene) {
-        move(scene);
+    public void update(Scene scene, GraphicsContext gc, int[][] tile) {
+        KeyPressed(scene);
+        KeyReleased(scene);
+        show(scene, tile);
+        
     }
 }
