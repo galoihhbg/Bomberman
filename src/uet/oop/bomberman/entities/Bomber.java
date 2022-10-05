@@ -63,6 +63,18 @@ public class Bomber extends Entity {
     		return true;
     	}
     	int size = Sprite.SCALED_SIZE;
+    	
+    	int xUnit_1 = x / size;
+    	int yUnit_1 = y / size;
+    	
+    	int xUnit_2 = (x + size -10) / size;
+    	int yUnit_2 = y / size;
+    	
+    	int xUnit_3 = x / size;
+    	int yUnit_3 = (y + size -2) / size;
+    	
+    	int xUnit_4 = (x + size -10) / size;
+    	int yUnit_4 = (y + size - 2) / size;
 
         int nextX_1 = (nextX) / size;
         int nextY_1 = nextY / size;
@@ -76,11 +88,14 @@ public class Bomber extends Entity {
         int nextX_4 = (nextX + size - 10) / size;
         int nextY_4 = (nextY + size - 2) / size;
         
-        if (tile[yUnit][xUnit] == Const.BOMB) {
-        	return !((tile[nextY_1][nextX_1] == Const.WALL ||
-                (tile[nextY_2][nextX_2] == Const.WALL ||
-                (tile[nextY_3][nextX_3] == Const.WALL ||
-                (tile[nextY_4][nextX_4] == Const.WALL)))));
+        if (tile[yUnit_1][xUnit_1] == Const.BOMB || 
+        	tile[yUnit_2][xUnit_2] == Const.BOMB || 
+        	tile[yUnit_3][xUnit_3] == Const.BOMB ||
+        	tile[yUnit_4][xUnit_4] == Const.BOMB) {
+        	return !(tile[nextY_1][nextX_1] == Const.WALL ||
+        			tile[nextY_2][nextX_2] == Const.WALL ||
+        			tile[nextY_3][nextX_3] == Const.WALL ||
+        			tile[nextY_4][nextX_4] == Const.WALL);
         }
         return !((tile[nextY_1][nextX_1] == Const.WALL || tile[nextY_1][nextX_1] == Const.BOMB) ||
                 (tile[nextY_2][nextX_2] == Const.WALL || tile[nextY_2][nextX_2] == Const.BOMB) ||
@@ -189,10 +204,11 @@ public class Bomber extends Entity {
         		break;
         	case SPACE:
         		if (bombs.size() < sizeBombStock) {
-        			int bombx =(x) / Sprite.SCALED_SIZE * Sprite.SCALED_SIZE;
-        			int bomby =(y + 16) / Sprite.SCALED_SIZE * Sprite.SCALED_SIZE;
+        			int bombx =(x) / Sprite.SCALED_SIZE;
+        			int bomby =(y + 16) / Sprite.SCALED_SIZE;
         			Bomb bomb = new Bomb(bombx, bomby, Sprite.bomb.getFxImage(), true);
         			bombs.add(bomb);
+        			System.out.format("Bomber[%d, %d] - Bomb[%d, %d]\n", xUnit, yUnit, bombx, bomby);
         		}
         	default:
         		break;
