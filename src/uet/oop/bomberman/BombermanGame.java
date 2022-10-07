@@ -10,10 +10,12 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
-import uet.oop.bomberman.constants.Const;
+import uet.oop.bomberman.constants.Const.Tile_Code;
 import uet.oop.bomberman.entities.Bomber;
+import uet.oop.bomberman.entities.Brick;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.Grass;
+import uet.oop.bomberman.entities.Tile;
 import uet.oop.bomberman.entities.Wall;
 import uet.oop.bomberman.graphics.Sprite;
 
@@ -29,7 +31,7 @@ public class BombermanGame extends Application {
     //private List<Entity> bomblist = new ArrayList<>();
     private Bomber bomberman = new Bomber(1, 1, Sprite.player_down.getFxImage());
     
-    public int[][] tile = new int[HEIGHT][WIDTH];
+    public Tile[][] tile = new Tile[HEIGHT][WIDTH];
 
 
     public static void main(String[] args) {
@@ -67,9 +69,6 @@ public class BombermanGame extends Application {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-                if (tile[1][1] == 1) {
-                	System.out.println("Check");
-                }
            }
                 
         };
@@ -89,29 +88,42 @@ public class BombermanGame extends Application {
                 Entity object;
                 if (j == 0 || j == HEIGHT - 1 || i == 0 || i == WIDTH - 1 || (j % 2 == 0 && i % 2 == 0)) {
                     object = new Wall(i, j, Sprite.wall.getFxImage());
-                    tile[j][i] = Const.WALL;
+                    tile[j][i] = new Tile(Tile_Code.WALL, object);
                 }
                 else {
-                    object = new Grass(i, j, Sprite.grass.getFxImage());
-                    tile[j][i] = Const.GRASS;
+                	if (i == 3) {
+                		object = new Brick(i, j, Sprite.brick.getFxImage());
+                		tile[j][i] = new Tile(Tile_Code.BRICK, object);
+                	} else {
+                		object = new Grass(i, j, Sprite.grass.getFxImage());
+                        tile[j][i] = new Tile(Tile_Code.GRASS, object);
+                	}
+                    
                 }
-                stillObjects.add(object);
+                //stillObjects.add(object);
             }
         }
     }
 
-    public void update(Scene scene, GraphicsContext gc, int[][] tile) {
+    public void update(Scene scene, GraphicsContext gc, Tile[][] tile) {
     	for (Entity e:entities) {
     		e.update(scene,gc, tile);
     	}
-//    	for (Entity e:bomblist) {
-//    		e.update(scene, gc, tile);
-//    	}
+    	for (int i = 0; i < WIDTH; i++) {
+        	for (int j = 0; j < HEIGHT; j++) {
+        		tile[j][i].getType().update(scene, gc, tile);
+        	}
+        }
     }
 
     public void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        stillObjects.forEach(g -> g.render(gc));
+        //stillObjects.forEach(g -> g.render(gc));
+        for (int i = 0; i < WIDTH; i++) {
+        	for (int j = 0; j < HEIGHT; j++) {
+        		tile[j][i].getType().render(gc);
+        	}
+        }
         //bomblist.forEach(g -> g.render(gc));
         bomberman.bombs.forEach(g -> g.render(gc));
         entities.forEach(g -> g.render(gc));
