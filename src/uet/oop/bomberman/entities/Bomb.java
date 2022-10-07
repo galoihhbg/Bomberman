@@ -15,12 +15,10 @@ public class Bomb extends Entity{
 	private int exploding_frame;
 	private Sprite[] bomb_frame = {Sprite.bomb, Sprite.bomb_1, Sprite.bomb_2};
 	private Sprite[] bomb_explode = {Sprite.bomb_exploded, Sprite.bomb_exploded1, Sprite.bomb_exploded2};
-	private Sprite[] vertical_flame = {Sprite.explosion_vertical, Sprite.explosion_vertical1, Sprite.explosion_vertical2};
-	private Sprite[] horizontal_flame = {Sprite.explosion_horizontal, Sprite.explosion_horizontal1, Sprite.explosion_horizontal2};
-	private Sprite[] last_left = {Sprite.explosion_horizontal_left_last, Sprite.explosion_horizontal_left_last1, Sprite.explosion_horizontal_left_last2};
-	private Sprite[] last_right = {Sprite.explosion_horizontal_right_last, Sprite.explosion_horizontal_right_last1, Sprite.explosion_horizontal_right_last2};
-	private Sprite[] last_top = {Sprite.explosion_vertical_top_last, Sprite.explosion_vertical_top_last1, Sprite.explosion_vertical_top_last2};
-	private Sprite[] last_down = {Sprite.explosion_vertical_down_last, Sprite.explosion_vertical_down_last1, Sprite.explosion_vertical_down_last2};
+	private Sprite[] last_left = {Sprite.explosion_horizontal, Sprite.explosion_horizontal1, Sprite.explosion_horizontal2};
+	private Sprite[] last_right = {Sprite.explosion_horizontal, Sprite.explosion_horizontal1, Sprite.explosion_horizontal2};
+	private Sprite[] last_top = {Sprite.explosion_vertical, Sprite.explosion_vertical1, Sprite.explosion_vertical2};
+	private Sprite[] last_down = {Sprite.explosion_vertical, Sprite.explosion_vertical1, Sprite.explosion_vertical2};;
 	private int explosion_range;
 	private boolean isExploded;
 	private int countToExplode;
@@ -36,6 +34,7 @@ public class Bomb extends Entity{
     	this.intervalToExplode = 40;
     	this.normal_frame = -1;
     	this.exploding_frame = -1;
+    	this.explosion_range = 2;
     }
     
     public void setImg(Image img) {
@@ -59,6 +58,9 @@ public class Bomb extends Entity{
 
 	@Override
 	public void update(Scene scene, GraphicsContext gc, Tile[][] tile) {
+		if (tile[yUnit][xUnit].getCode() == Tile_Code.FLAME) {
+			countToExplode = intervalToExplode;
+		}
 		tile[yUnit][xUnit].setCode(Const.Tile_Code.BOMB);
 		countToExplode++;
 		if (countToExplode < intervalToExplode) {
@@ -75,37 +77,68 @@ public class Bomb extends Entity{
 				isExploded = true;
 			}
 			setImg(bomb_explode[exploding_frame].getFxImage());
-			if (tile[yUnit][xUnit+1].getCode() != Const.Tile_Code.WALL && tile[yUnit][xUnit+1].getCode() != Tile_Code.BRICK) {
-				gc.drawImage(last_right[exploding_frame].getFxImage(), (xUnit+1) * Sprite.SCALED_SIZE, (yUnit) * Sprite.SCALED_SIZE);
-				tile[yUnit][xUnit+1].setCode(Const.Tile_Code.FLAME);
+			for (int i = 1; i <= explosion_range; i++) {
+				if (xUnit + i < Const.WIDTH && tile[yUnit][xUnit+i].getCode() != Const.Tile_Code.WALL && tile[yUnit][xUnit+i].getCode() != Tile_Code.BRICK) {
+					gc.drawImage(last_right[exploding_frame].getFxImage(), (xUnit+i) * Sprite.SCALED_SIZE, (yUnit) * Sprite.SCALED_SIZE);
+					tile[yUnit][xUnit+i].setCode(Const.Tile_Code.FLAME);
+				} else break;
 			}
-			if (tile[yUnit][xUnit-1].getCode() != Const.Tile_Code.WALL && tile[yUnit][xUnit-1].getCode() != Tile_Code.BRICK) {
-				gc.drawImage(last_left[exploding_frame].getFxImage(), (xUnit-1) * Sprite.SCALED_SIZE, (yUnit) * Sprite.SCALED_SIZE);
-				tile[yUnit][xUnit-1].setCode(Const.Tile_Code.FLAME);
+			for (int i = 1; i <= explosion_range; i++) {
+				if (xUnit - i >= 0 && tile[yUnit][xUnit-i].getCode() != Const.Tile_Code.WALL && tile[yUnit][xUnit-i].getCode() != Tile_Code.BRICK) {
+					gc.drawImage(last_left[exploding_frame].getFxImage(), (xUnit-i) * Sprite.SCALED_SIZE, (yUnit) * Sprite.SCALED_SIZE);
+					tile[yUnit][xUnit-i].setCode(Const.Tile_Code.FLAME);
+				} else break;
 			}
-			if (tile[yUnit+1][xUnit].getCode() != Const.Tile_Code.WALL && tile[yUnit + 1][xUnit].getCode() != Tile_Code.BRICK) {
-				gc.drawImage(last_top[exploding_frame].getFxImage(), (xUnit) * Sprite.SCALED_SIZE, (yUnit + 1) * Sprite.SCALED_SIZE);
-				tile[yUnit+1][xUnit].setCode(Const.Tile_Code.FLAME);
+			for (int i = 1; i <= explosion_range; i++) {
+				if (yUnit + i < Const.HEIGHT && tile[yUnit+i][xUnit].getCode() != Const.Tile_Code.WALL && tile[yUnit + i][xUnit].getCode() != Tile_Code.BRICK) {
+					gc.drawImage(last_top[exploding_frame].getFxImage(), (xUnit) * Sprite.SCALED_SIZE, (yUnit + i) * Sprite.SCALED_SIZE);
+					tile[yUnit+i][xUnit].setCode(Const.Tile_Code.FLAME);
+				} else break;
 			}
-			if (tile[yUnit-1][xUnit].getCode() != Const.Tile_Code.WALL && tile[yUnit - 1][xUnit].getCode() != Tile_Code.BRICK) {
-				gc.drawImage(last_down[exploding_frame].getFxImage(), (xUnit) * Sprite.SCALED_SIZE, (yUnit - 1) * Sprite.SCALED_SIZE);
-				tile[yUnit-1][xUnit].setCode(Const.Tile_Code.FLAME);
+			for (int i = 1; i <= explosion_range; i++) {
+				if (yUnit - i >= 0 && tile[yUnit-i][xUnit].getCode() != Const.Tile_Code.WALL && tile[yUnit - i][xUnit].getCode() != Tile_Code.BRICK) {
+					gc.drawImage(last_down[exploding_frame].getFxImage(), (xUnit) * Sprite.SCALED_SIZE, (yUnit - i) * Sprite.SCALED_SIZE);
+					tile[yUnit-i][xUnit].setCode(Const.Tile_Code.FLAME);
+				} else break;
 			}
+			
 		}
 		if (isExploded) {
-				tile[yUnit][xUnit].setCode(Const.Tile_Code.FLAME);
-			if (tile[yUnit][xUnit + 1].getCode() != Const.Tile_Code.WALL) {
-				tile[yUnit][xUnit + 1].setCode(Const.Tile_Code.FLAME);
+			tile[yUnit][xUnit].setCode(Const.Tile_Code.GRASS);
+			for (int i = 1; i <= explosion_range; i++) {
+				if (xUnit + i < Const.WIDTH && tile[yUnit][xUnit + i].getCode() != Const.Tile_Code.WALL) {
+					if (tile[yUnit][xUnit + i].getCode() == Tile_Code.BRICK) {
+						tile[yUnit][xUnit + i].setCode(Const.Tile_Code.GRASS);
+						break;
+					} else tile[yUnit][xUnit + i].setCode(Const.Tile_Code.GRASS);
+					
+				} else break;
 			}
-			if (tile[yUnit][xUnit - 1].getCode() != Const.Tile_Code.WALL) {
-				tile[yUnit][xUnit - 1].setCode(Const.Tile_Code.FLAME);
+			for (int i = 1; i <= explosion_range; i++) {
+				if (xUnit - i >= 0 && tile[yUnit][xUnit - i].getCode() != Const.Tile_Code.WALL) {
+					if (tile[yUnit][xUnit - i].getCode() == Tile_Code.BRICK) {
+						tile[yUnit][xUnit - i].setCode(Const.Tile_Code.GRASS);
+						break;
+					} else tile[yUnit][xUnit - i].setCode(Const.Tile_Code.GRASS);
+				} else break;
 			}
-			if (tile[yUnit + 1][xUnit].getCode() != Const.Tile_Code.WALL) {
-				tile[yUnit + 1][xUnit].setCode(Const.Tile_Code.FLAME);
+			for (int i = 1; i <= explosion_range; i++) {
+				if (yUnit + i < Const.HEIGHT && tile[yUnit + i][xUnit].getCode() != Const.Tile_Code.WALL) {
+					if (tile[yUnit + i][xUnit].getCode() == Tile_Code.BRICK) {
+						tile[yUnit + i][xUnit].setCode(Const.Tile_Code.GRASS);
+						break;
+					} else tile[yUnit + i][xUnit].setCode(Const.Tile_Code.GRASS);
+				} else break;
 			}
-			if (tile[yUnit - 1][xUnit].getCode() != Const.Tile_Code.WALL) {
-				tile[yUnit - 1][xUnit].setCode(Const.Tile_Code.FLAME);
+			for (int i = 1; i <= explosion_range; i++) {
+				if (yUnit - i >= 0 && tile[yUnit - i][xUnit].getCode() != Const.Tile_Code.WALL) {
+					if (tile[yUnit - i][xUnit].getCode() == Tile_Code.BRICK) {
+						tile[yUnit - i][xUnit].setCode(Const.Tile_Code.GRASS);
+						break;
+					} else tile[yUnit - i][xUnit].setCode(Const.Tile_Code.GRASS);
+				} else break;
 			}
+				
 		}
 		
 		

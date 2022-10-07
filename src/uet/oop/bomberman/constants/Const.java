@@ -6,6 +6,10 @@ public class Const {
 		GRASS,
 		BRICK,
 		BOMB,
-		FLAME
+		FLAME,
+		PORTAL
 	}
+	
+	public static final int WIDTH = 20;
+	public static final int HEIGHT = 15;
 }

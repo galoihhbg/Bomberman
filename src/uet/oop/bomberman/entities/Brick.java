@@ -26,7 +26,7 @@ public class Brick extends Entity{
     }
 	@Override
 	public void update(Scene scene, GraphicsContext gc, Tile[][] tile) {
-	     if (tile[yUnit][xUnit].getCode() == Tile_Code.FLAME) {
+	     if (tile[yUnit][xUnit].getCode() == Tile_Code.GRASS) {
 	    	 frame++;
 	    	 if (frame < 2) {
 	    		 setImg(brick_exploded[frame]);
