@@ -9,6 +9,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import uet.oop.bomberman.constants.Const;
 import uet.oop.bomberman.entities.Bomber;
@@ -18,7 +19,9 @@ import uet.oop.bomberman.entities.Wall;
 import uet.oop.bomberman.graphics.Sprite;
 
 public class BombermanGame extends Application {
-    
+
+
+
     public static final int WIDTH = 20;
     public static final int HEIGHT = 15;
     
@@ -34,8 +37,10 @@ public class BombermanGame extends Application {
 
     public static void main(String[] args) {
         Application.launch(BombermanGame.class);
+
     }
-    
+
+
     
     @Override
     public void start(Stage stage) {
@@ -54,6 +59,9 @@ public class BombermanGame extends Application {
         stage.setScene(scene);
         stage.show();
 
+        Text fps = new Text();
+        fps.setX(1);
+        fps.setY(1);
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
@@ -70,10 +78,34 @@ public class BombermanGame extends Application {
                 if (tile[1][1] == 1) {
                 	System.out.println("Check");
                 }
+
+                //Show fps
+                long[] frameTimes = new long[100];
+                int frameTimeIndex = 0;
+                boolean check = false;
+
+                long oldFrameTimes = frameTimes[frameTimeIndex];
+                frameTimes[frameTimeIndex] = l;
+                frameTimeIndex = (frameTimeIndex + 1) / 100;
+                if (frameTimeIndex == 0) {
+                    check = true;
+                }
+                if (check) {
+                    check = false;
+                    long nanosPassed = l - oldFrameTimes;
+                    long nanosPerFrame = nanosPassed / 100;
+                    double frameRate = 1000000000.0 / nanosPerFrame;
+                    fps.setText(String.valueOf(frameRate));
+                    // Cần thêm text fps vào scene.
+                }
            }
                 
         };
         timer.start();
+
+        root.getChildren().add(fps);
+
+
         
         createMap();
         //Bomber bomberman = new Bomber(1, 1, Sprite.player_down.getFxImage());
@@ -109,6 +141,7 @@ public class BombermanGame extends Application {
 //    	}
     }
 
+    
     public void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         stillObjects.forEach(g -> g.render(gc));
