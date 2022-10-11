@@ -10,6 +10,6 @@ public class Const {
 		PORTAL
 	}
 	
-	public static final int WIDTH = 20;
+	public static final int WIDTH = 31;
 	public static final int HEIGHT = 15;
 }

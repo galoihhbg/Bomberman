@@ -87,8 +87,8 @@ public class Balloom extends Entity{
 		}
 		
 	}
-	@Override
-	public void update(Scene scene, GraphicsContext gc, Tile[][] tile) {
+	
+	public void moveNoBrain(Tile[][] tile) {
 		boolean canMove = true;
 		if (isAlive) {
 			frame++;
@@ -108,7 +108,17 @@ public class Balloom extends Entity{
 								orient = 3 - orient;
 								canMove = true;
 							} else {
-								canMove = false;
+								if (choice[1]) {
+									orient = 1;
+									canMove = true;
+								} else {
+									if (choice[2]) {
+										orient = 2;
+										canMove = true;
+									} else {
+										canMove= false;
+									}
+								}
 							}
 						}
 					}
@@ -125,7 +135,17 @@ public class Balloom extends Entity{
 								orient = 3 - orient;
 								canMove = true;
 							} else {
-								canMove = false;
+								if (choice[0]) {
+									orient = 0;
+									canMove = true;
+								} else {
+									if (choice[3]) {
+										orient = 3;
+										canMove = true;
+									} else {
+										canMove = false;
+									}
+								}
 							}
 						}
 					}
@@ -133,6 +153,10 @@ public class Balloom extends Entity{
 			} 
 			if (canMove) move(tile);
 		}
+	}
+	@Override
+	public void update(Scene scene, GraphicsContext gc, Tile[][] tile) {
+		moveNoBrain(tile);
 	}
 
 	public int getxUnit() {

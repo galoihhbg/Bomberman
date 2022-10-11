@@ -24,16 +24,14 @@ import uet.oop.bomberman.entities.Balloom;
 
 public class BombermanGame extends Application {
     
-    public static final int WIDTH = 20;
+    public static final int WIDTH = 31;
     public static final int HEIGHT = 15;
     
     private GraphicsContext gc;
     private Canvas canvas;
     private List<Entity> entities = new ArrayList<>();
-    private List<Entity> stillObjects = new ArrayList<>();
     private List<Entity> enemies = new ArrayList<>();
     private List<Oneal> oneals = new ArrayList<>();
-    //private List<Entity> bomblist = new ArrayList<>();
     private Bomber bomberman = new Bomber(1, 1, Sprite.player_down.getFxImage());
     
     public Tile[][] tile = new Tile[HEIGHT][WIDTH];
@@ -112,6 +110,8 @@ public class BombermanGame extends Application {
                 //stillObjects.add(object);
             }
         }
+        tile[2][1] = new Tile(Tile_Code.BRICK, new Brick(1,2,Sprite.brick.getFxImage()));
+        tile[1][2] = new Tile(Tile_Code.BRICK, new Brick(2,1,Sprite.brick.getFxImage()));
         List<Pair<Integer, Integer>> path = Tile.findPath(tile, 6, 5, 1, 8);
         path.forEach(g -> {
         	System.out.println(g.getKey() + " " + g.getValue());
@@ -119,14 +119,18 @@ public class BombermanGame extends Application {
     }
 
     public void update(Scene scene, GraphicsContext gc, Tile[][] tile) {
+    	
+    	for (int i = 0; i < HEIGHT; i++) {
+        	for (int j = 0; j < WIDTH; j++) {
+        		tile[i][j].getType().update(scene, gc, tile);
+//        		if (tile[i][j].getCode() == Tile_Code.GRASS) {
+//        			tile[i][j].setType(new Grass(j,i,Sprite.grass.getFxImage()));
+//        		}
+        	}
+        }
     	for (Entity e:entities) {
     		e.update(scene,gc, tile);
     	}
-    	for (int i = 0; i < WIDTH; i++) {
-        	for (int j = 0; j < HEIGHT; j++) {
-        		tile[j][i].getType().update(scene, gc, tile);
-        	}
-        }
     	for (Entity e:enemies) {
     		e.update(scene, gc, tile);
     	}
@@ -140,9 +144,9 @@ public class BombermanGame extends Application {
     public void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         //stillObjects.forEach(g -> g.render(gc));
-        for (int i = 0; i < WIDTH; i++) {
-        	for (int j = 0; j < HEIGHT; j++) {
-        		tile[j][i].getType().render(gc);
+        for (int i = 0; i < HEIGHT; i++) {
+        	for (int j = 0; j < WIDTH; j++) {
+        		tile[i][j].getType().render(gc);
         	}
         }
         //bomblist.forEach(g -> g.render(gc));

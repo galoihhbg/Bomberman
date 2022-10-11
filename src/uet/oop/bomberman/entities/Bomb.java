@@ -137,9 +137,10 @@ public class Bomb extends Entity{
 						break;
 					} else tile[yUnit - i][xUnit].setCode(Const.Tile_Code.GRASS);
 				} else break;
-			}
-				
+			}	
 		}
+		
+		
 		
 		
 	}

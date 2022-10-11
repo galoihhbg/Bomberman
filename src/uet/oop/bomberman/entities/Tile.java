@@ -33,6 +33,27 @@ public class Tile {
     	this.type = type;
     }
     
+    public static boolean isConnected(Tile[][] tile, int srcX, int srcY, int desX, int desY, boolean[][] found) {
+    	if (srcX == desX && srcY == desY) {
+    		return true;
+    	}
+    	found[srcX][srcY] = true;
+    	if (!found[srcX][srcY-1] && srcX >= 1 && srcX <= Const.HEIGHT && srcY-1 >=1 && srcY-1 <= Const.WIDTH && tile[srcX][srcY-1].code  != Tile_Code.WALL && tile[srcX][srcY-1].code != Tile_Code.BRICK) {
+    		if (isConnected(tile, srcX, srcY-1, desX, desY, found)) return true;
+    	} 
+    	if (!found[srcX][srcY+1] && srcX >= 1 && srcX <= Const.HEIGHT && srcY+1 >=1 && srcY+1 <= Const.WIDTH && tile[srcX][srcY+1].code  != Tile_Code.WALL && tile[srcX][srcY+1].code != Tile_Code.BRICK) {
+    		if (isConnected(tile, srcX, srcY+1, desX, desY, found)) return true;
+    	} 
+    	if (!found[srcX + 1][srcY] && srcX + 1 >= 1 && srcX + 1<= Const.HEIGHT && srcY>=1 && srcY-1 <= Const.WIDTH && tile[srcX + 1][srcY].code  != Tile_Code.WALL && tile[srcX + 1][srcY].code != Tile_Code.BRICK) {
+    		if (isConnected(tile, srcX + 1, srcY, desX, desY, found)) return true;;
+    	} 
+    	if (!found[srcX - 1][srcY] && srcX -1 >= 1 && srcX - 1 <= Const.HEIGHT && srcY>=1 && srcY <= Const.WIDTH && tile[srcX - 1][srcY].code  != Tile_Code.WALL && tile[srcX - 1][srcY].code != Tile_Code.BRICK) {
+    		if (isConnected(tile, srcX - 1, srcY, desX, desY, found)) return true;
+    	} 
+    	
+    	return false;
+    }
+    
     public static List<Pair<Integer, Integer>> findPath(Tile[][] tile, int srcX, int srcY, int desX, int desY) {
     	LinkedList<Pair<Integer, Integer>> path = new LinkedList<Pair<Integer, Integer>>();
         Pair<Integer, Integer>[][] prev = new Pair[Const.HEIGHT][Const.WIDTH];
@@ -56,56 +77,52 @@ public class Tile {
 			int dist = Integer.MAX_VALUE;
 			for (int i = 1; i < Const.HEIGHT-1; i++) {
 				for (int j = 1; j < Const.WIDTH-1; j++) {
-					if (!found[i][j] && minDist[i][j] < dist) {
+					if (tile[i][j].code  != Tile_Code.WALL && tile[i][j].code != Tile_Code.BRICK && !found[i][j] && minDist[i][j] < dist) {
 						dist = minDist[i][j];
 						x = i;
 						y = j;
 					}
 				}
 			}
-			
-//			System.out.println(x + " " + y);
 			found[x][y] = true;
-			isChecked++;
+			isChecked +=1;
+			//System.out.println(x+" "+y);
 			if (x == desX && y == desY) {
 				break;
 			}
-			if (isChecked == (Const.HEIGHT-1)*(Const.WIDTH-1)) {
-				break;
-			}
-			isConnected = false;
-			if (tile[x][y-1].code  != Tile_Code.WALL) {
+			//isConnected = false;
+			if (tile[x][y-1].code  != Tile_Code.WALL && tile[x][y-1].code != Tile_Code.BRICK) {
 				if (minDist[x][y-1] > minDist[x][y] + 1) {
 					minDist[x][y-1] = minDist[x][y] + 1;
 					prev[x][y-1] = new Pair<Integer, Integer>(x,y);
  				}
-				isConnected = true;
+				//isConnected = true;
 			} 
-			if (tile[x-1][y].code  != Tile_Code.WALL) {
+			if (tile[x-1][y].code  != Tile_Code.WALL && tile[x-1][y].code != Tile_Code.BRICK) {
 				if (minDist[x-1][y] > minDist[x][y] + 1) {
 					minDist[x-1][y] = minDist[x][y] + 1;
 					prev[x-1][y] = new Pair<Integer, Integer>(x,y);
 					
  				}
-				isConnected = true;
+				//isConnected = true;
 			}
-			if (tile[x][y+1].code  != Tile_Code.WALL) {
+			if (tile[x][y+1].code  != Tile_Code.WALL && tile[x][y+1].code != Tile_Code.BRICK) {
 				if (minDist[x][y+1] > minDist[x][y] + 1) {
 					minDist[x][y+1] = minDist[x][y] + 1;
 					prev[x][y+1] = new Pair<Integer, Integer>(x,y);
 					
  				}
-				isConnected = true;
+				//isConnected = true;
 			}
-			if (tile[x+1][y].code  != Tile_Code.WALL) {
+			if (tile[x+1][y].code  != Tile_Code.WALL && tile[x +1][y-1].code != Tile_Code.BRICK) {
 				if (minDist[x+1][y] > minDist[x][y] + 1) {
 					minDist[x+1][y] = minDist[x][y] + 1;
 					prev[x+1][y] = new Pair<Integer, Integer>(x,y);
 					
  				}
-				isConnected = true;
+				//isConnected = true;
 			}
-			if (!isConnected) break;
+			//if (!isConnected) break;
 		}
 		int desXX = desX, desYY = desY;
 		path.addFirst(new Pair<Integer, Integer>(desX, desY));
@@ -118,7 +135,7 @@ public class Tile {
 				desYY = y;
 			}
 		}
-		path.removeFirst();
+		if (!path.isEmpty()) path.removeFirst();
 		return path;
     }
 }

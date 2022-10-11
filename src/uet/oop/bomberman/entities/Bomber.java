@@ -216,6 +216,7 @@ public class Bomber extends Entity {
     public void update(Scene scene, GraphicsContext gc, Tile[][] tile) {
     	if (tile[yUnit][xUnit].getCode() == Tile_Code.FLAME) {
     		isAlive = false;
+    		System.out.println("Game Over!");
     	}
         KeyPressed(scene);
         KeyReleased(scene);
