@@ -38,13 +38,14 @@ public class Oneal extends Entity{
 	public void update(Scene scene, GraphicsContext gc, Tile[][] tile) {
 		if (this.x % Sprite.SCALED_SIZE == 0) xUnit= (this.x) / Sprite.SCALED_SIZE;
 		if (this.y % Sprite.SCALED_SIZE == 0) yUnit = (this.y) / Sprite.SCALED_SIZE;
-		//System.out.println(xUnit + " "+ yUnit);
-		//System.out.println(x +" "+ y);
 		boolean[][] found = new boolean[Const.HEIGHT][Const.WIDTH];
     	for (int i = 0; i < Const.HEIGHT; i++) {
     		for (int j = 0; j < Const.WIDTH; j++) {
     			found[i][j] = false;
     		}
+    	}
+    	if (tile[yUnit][xUnit].getCode() == Tile_Code.FLAME) {
+    		setIsAlive(false);
     	}
 		boolean isconnected = Tile.isConnected(tile, yUnit, xUnit, desY, desX, found);
 		if (!isconnected) {
@@ -258,5 +259,10 @@ public class Oneal extends Entity{
 	public void setImg(Sprite sprite) {
 		this.img = sprite.getFxImage();
 	}
-
+	public void setIsAlive(boolean isAlive) {
+		this.isAlive = isAlive;
+	}
+	public boolean getIsAlive() {
+		return this.isAlive;
+	}
 }

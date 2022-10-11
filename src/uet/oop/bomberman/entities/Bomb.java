@@ -34,7 +34,7 @@ public class Bomb extends Entity{
     	this.intervalToExplode = 40;
     	this.normal_frame = -1;
     	this.exploding_frame = -1;
-    	this.explosion_range = 2;
+    	this.explosion_range = 1;
     }
     
     public void setImg(Image img) {

@@ -30,7 +30,7 @@ public class BombermanGame extends Application {
     private GraphicsContext gc;
     private Canvas canvas;
     private List<Entity> entities = new ArrayList<>();
-    private List<Entity> enemies = new ArrayList<>();
+    private List<Balloom> enemies = new ArrayList<>();
     private List<Oneal> oneals = new ArrayList<>();
     private Bomber bomberman = new Bomber(1, 1, Sprite.player_down.getFxImage());
     
@@ -65,8 +65,6 @@ public class BombermanGame extends Application {
                 try {
                 	render();
                     update(scene, gc, tile);
-                    //System.out.println(bomblist.size());
-                    //placeBomb(bomberman);
 					Thread.sleep(1000/60);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
@@ -78,17 +76,8 @@ public class BombermanGame extends Application {
         timer.start();
         
         createMap();
-        //Bomber bomberman = new Bomber(1, 1, Sprite.player_down.getFxImage());
-        Entity enemy = new Balloom(1, 5, Sprite.balloom_right1.getFxImage());
-        Oneal oneal = new Oneal(5,6, Sprite.oneal_right1.getFxImage());
-        enemies.add(enemy);
-        entities.add(bomberman);
-        oneals.add(oneal);
     }
   
-//    public void placeBomb(Bomber bomber) {
-//    	bomblist = bomber.getBombs();
-//    }
     public void createMap() {
         for (int i = 0; i < WIDTH; i++) {
             for (int j = 0; j < HEIGHT; j++) {
@@ -98,24 +87,20 @@ public class BombermanGame extends Application {
                     tile[j][i] = new Tile(Tile_Code.WALL, object);
                 }
                 else {
-//                	if (i == 3) {
-//                		object = new Brick(i, j, Sprite.brick.getFxImage());
-//                		tile[j][i] = new Tile(Tile_Code.BRICK, object);
-//                	} else {
                 		object = new Grass(i, j, Sprite.grass.getFxImage());
-                        tile[j][i] = new Tile(Tile_Code.GRASS, object);
-                	//}
-                    
+                        tile[j][i] = new Tile(Tile_Code.GRASS, object); 
                 }
-                //stillObjects.add(object);
             }
         }
         tile[2][1] = new Tile(Tile_Code.BRICK, new Brick(1,2,Sprite.brick.getFxImage()));
         tile[1][2] = new Tile(Tile_Code.BRICK, new Brick(2,1,Sprite.brick.getFxImage()));
-        List<Pair<Integer, Integer>> path = Tile.findPath(tile, 6, 5, 1, 8);
-        path.forEach(g -> {
-        	System.out.println(g.getKey() + " " + g.getValue());
-        });
+        Balloom enemy = new Balloom(1, 5, Sprite.balloom_right1.getFxImage());
+        Oneal oneal = new Oneal(5,6, Sprite.oneal_right1.getFxImage());
+        enemies.add(enemy);
+        enemies.add(new Balloom(6,9, Sprite.balloom_left1.getFxImage()));
+        oneals.add(new Oneal(8, 9, Sprite.oneal_left1.getFxImage()));
+        entities.add(bomberman);
+        oneals.add(oneal);
     }
 
     public void update(Scene scene, GraphicsContext gc, Tile[][] tile) {
@@ -123,33 +108,30 @@ public class BombermanGame extends Application {
     	for (int i = 0; i < HEIGHT; i++) {
         	for (int j = 0; j < WIDTH; j++) {
         		tile[i][j].getType().update(scene, gc, tile);
-//        		if (tile[i][j].getCode() == Tile_Code.GRASS) {
-//        			tile[i][j].setType(new Grass(j,i,Sprite.grass.getFxImage()));
-//        		}
         	}
         }
     	for (Entity e:entities) {
     		e.update(scene,gc, tile);
     	}
-    	for (Entity e:enemies) {
+    	for (Balloom e:enemies) {
     		e.update(scene, gc, tile);
     	}
+    	enemies.removeIf(e -> e.getIsAlive() == false);
     	for (Oneal o:oneals) {
     		o.setDesX(bomberman.getxUnit());
     		o.setDesY(bomberman.getyUnit());
     		o.update(scene, gc, tile);
     	}
+    	oneals.removeIf(o -> o.getIsAlive() == false);
     }
 
     public void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        //stillObjects.forEach(g -> g.render(gc));
         for (int i = 0; i < HEIGHT; i++) {
         	for (int j = 0; j < WIDTH; j++) {
         		tile[i][j].getType().render(gc);
         	}
         }
-        //bomblist.forEach(g -> g.render(gc));
         bomberman.bombs.forEach(g -> g.render(gc));
         enemies.forEach(g -> g.render(gc));
         entities.forEach(g -> g.render(gc));

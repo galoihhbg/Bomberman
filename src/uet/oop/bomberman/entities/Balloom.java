@@ -157,6 +157,9 @@ public class Balloom extends Entity{
 	@Override
 	public void update(Scene scene, GraphicsContext gc, Tile[][] tile) {
 		moveNoBrain(tile);
+		if (tile[yUnit][xUnit].getCode() == Tile_Code.FLAME) {
+			setIsAlive(false);
+		}
 	}
 
 	public int getxUnit() {
@@ -202,5 +205,12 @@ public class Balloom extends Entity{
 	public void setChoice(Tile[][] tile) {
 		boolean[] choice = {isMovedto(tile, x + speed, y), isMovedto(tile, x, y - speed), isMovedto(tile, x, y + speed), isMovedto(tile, x - speed, y)};
 		this.choice = choice;
+	}
+	
+	public void setIsAlive(boolean isAlive) {
+		this.isAlive = isAlive;
+	}
+	public boolean getIsAlive() {
+		return this.isAlive;
 	}
 }

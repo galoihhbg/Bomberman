@@ -36,7 +36,7 @@ public class Bomber extends Entity {
         frame = 0;
         isRunning = false;
         speed = 3;
-        sizeBombStock = 3;
+        sizeBombStock = 2;
         setAlive(true);
     }
     /*
@@ -222,20 +222,10 @@ public class Bomber extends Entity {
         KeyReleased(scene);
         show(scene, tile);
         bombs.forEach(g -> {
-        	if (g != null) {
-        		
             	g.update(scene, gc, tile);
-            	if (g.getIsExplode()) {
-            		g = null;
-            	}
-        	}
         });
         
-        if (!bombs.isEmpty()) {
-        	if (bombs.get(0).getIsExplode()) {
-        		bombs.remove(0);
-        	}
-        }
+        bombs.removeIf(g -> g.getIsExplode() == true);
     }
 	public int getxUnit() {
 		return xUnit;
