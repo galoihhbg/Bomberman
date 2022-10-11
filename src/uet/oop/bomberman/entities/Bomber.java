@@ -77,16 +77,16 @@ public class Bomber extends Entity {
     	int yUnit_4 = (y + size - 2) / size;
 
         int nextX_1 = (nextX) / size;
-        int nextY_1 = nextY / size;
+        int nextY_1 = (nextY + 4) / size;
 
         int nextX_2 = (nextX + size - 10) / size;
-        int nextY_2 = nextY / size;
+        int nextY_2 = (nextY +4) / size;
 
         int nextX_3 = nextX / size;
-        int nextY_3 = (nextY + size - 2) / size;
+        int nextY_3 = (nextY + size - 4) / size;
 
         int nextX_4 = (nextX + size - 10) / size;
-        int nextY_4 = (nextY + size - 2) / size;
+        int nextY_4 = (nextY + size - 4) / size;
         
         if (tile[yUnit_1][xUnit_1].getCode().equals(Const.Tile_Code.BOMB) || 
         	tile[yUnit_2][xUnit_2].getCode().equals(Const.Tile_Code.BOMB) || 
@@ -108,28 +108,28 @@ public class Bomber extends Entity {
     public void KeyPressed(Scene scene) {
     	scene.setOnKeyPressed(event-> {
         	switch(event.getCode()) {
-        	case S:
+        	case DOWN:
         		up = false;
         		down = true;
         		left = false;
         		right = false;
         		isRunning = true;
         		break;
-        	case A:
+        	case LEFT:
         		up = false;
         		down = false;
         		left = true;
         		right = false;
         		isRunning = true;
         		break;
-        	case W:
+        	case UP:
         		up = true;
         		down = false;
         		left = false;
         		right = false;
         		isRunning = true;
         		break;
-        	case D:
+        	case RIGHT:
         		up = false;
         		down = false;
         		left = false;
@@ -158,32 +158,32 @@ public class Bomber extends Entity {
         		ChangeImg(player_right[frame]);
         		if (isMovedto(tile, x + speed, y)) {
         			x = x + speed;
-        			xUnit = x / Sprite.SCALED_SIZE;
-        			yUnit = y / Sprite.SCALED_SIZE;
+        			xUnit = (x + 16) / Sprite.SCALED_SIZE;
+        			yUnit = (y + 16) / Sprite.SCALED_SIZE;
         		}
         	}
         	if (left) {
         		ChangeImg(player_left[frame]);
         		if (isMovedto(tile, x - speed, y)) {
         			x = x - speed;
-        			xUnit = x / Sprite.SCALED_SIZE;
-        			yUnit = y / Sprite.SCALED_SIZE;
+        			xUnit = (x + 16) / Sprite.SCALED_SIZE;
+        			yUnit = (y + 16) / Sprite.SCALED_SIZE;
         		}
         	}
         	if (up) {
         		ChangeImg(player_up[frame]);
         		if (isMovedto(tile, x, y - speed)) {
         			y = y - speed;
-        			xUnit = x / Sprite.SCALED_SIZE;
-        			yUnit = y / Sprite.SCALED_SIZE;
+        			xUnit = (x + 16) / Sprite.SCALED_SIZE;
+        			yUnit = (y + 16) / Sprite.SCALED_SIZE;
         		}
         	}
         	if (down) {
         		ChangeImg(player_down[frame]);
         		if (isMovedto(tile, x, y + speed)) {
         			y = y + speed;
-        			xUnit = x / Sprite.SCALED_SIZE;
-        			yUnit = y / Sprite.SCALED_SIZE;
+        			xUnit = (x + 16) / Sprite.SCALED_SIZE;
+        			yUnit = (y + 16) / Sprite.SCALED_SIZE;
         		}
         	}
     	}
@@ -192,16 +192,16 @@ public class Bomber extends Entity {
     public void KeyReleased(Scene scene) {
         scene.setOnKeyReleased(event-> {
         	switch(event.getCode()) {
-        	case W:
+        	case UP:
         		up = false;
         		break;
-        	case D:
+        	case RIGHT:
         		right = false;
         		break;
-        	case S:
+        	case DOWN:
         		down = false;
         		break;
-        	case A:
+        	case LEFT:
         		left = false;
         		break;
         	case SPACE:

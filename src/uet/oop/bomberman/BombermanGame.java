@@ -10,14 +10,17 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import uet.oop.bomberman.constants.Const.Tile_Code;
 import uet.oop.bomberman.entities.Bomber;
 import uet.oop.bomberman.entities.Brick;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.Grass;
+import uet.oop.bomberman.entities.Oneal;
 import uet.oop.bomberman.entities.Tile;
 import uet.oop.bomberman.entities.Wall;
 import uet.oop.bomberman.graphics.Sprite;
+import uet.oop.bomberman.entities.Balloom;
 
 public class BombermanGame extends Application {
     
@@ -28,6 +31,8 @@ public class BombermanGame extends Application {
     private Canvas canvas;
     private List<Entity> entities = new ArrayList<>();
     private List<Entity> stillObjects = new ArrayList<>();
+    private List<Entity> enemies = new ArrayList<>();
+    private List<Oneal> oneals = new ArrayList<>();
     //private List<Entity> bomblist = new ArrayList<>();
     private Bomber bomberman = new Bomber(1, 1, Sprite.player_down.getFxImage());
     
@@ -76,7 +81,11 @@ public class BombermanGame extends Application {
         
         createMap();
         //Bomber bomberman = new Bomber(1, 1, Sprite.player_down.getFxImage());
+        Entity enemy = new Balloom(1, 5, Sprite.balloom_right1.getFxImage());
+        Oneal oneal = new Oneal(5,6, Sprite.oneal_right1.getFxImage());
+        enemies.add(enemy);
         entities.add(bomberman);
+        oneals.add(oneal);
     }
   
 //    public void placeBomb(Bomber bomber) {
@@ -91,18 +100,22 @@ public class BombermanGame extends Application {
                     tile[j][i] = new Tile(Tile_Code.WALL, object);
                 }
                 else {
-                	if (i == 3) {
-                		object = new Brick(i, j, Sprite.brick.getFxImage());
-                		tile[j][i] = new Tile(Tile_Code.BRICK, object);
-                	} else {
+//                	if (i == 3) {
+//                		object = new Brick(i, j, Sprite.brick.getFxImage());
+//                		tile[j][i] = new Tile(Tile_Code.BRICK, object);
+//                	} else {
                 		object = new Grass(i, j, Sprite.grass.getFxImage());
                         tile[j][i] = new Tile(Tile_Code.GRASS, object);
-                	}
+                	//}
                     
                 }
                 //stillObjects.add(object);
             }
         }
+        List<Pair<Integer, Integer>> path = Tile.findPath(tile, 6, 5, 1, 8);
+        path.forEach(g -> {
+        	System.out.println(g.getKey() + " " + g.getValue());
+        });
     }
 
     public void update(Scene scene, GraphicsContext gc, Tile[][] tile) {
@@ -114,6 +127,14 @@ public class BombermanGame extends Application {
         		tile[j][i].getType().update(scene, gc, tile);
         	}
         }
+    	for (Entity e:enemies) {
+    		e.update(scene, gc, tile);
+    	}
+    	for (Oneal o:oneals) {
+    		o.setDesX(bomberman.getxUnit());
+    		o.setDesY(bomberman.getyUnit());
+    		o.update(scene, gc, tile);
+    	}
     }
 
     public void render() {
@@ -126,6 +147,8 @@ public class BombermanGame extends Application {
         }
         //bomblist.forEach(g -> g.render(gc));
         bomberman.bombs.forEach(g -> g.render(gc));
+        enemies.forEach(g -> g.render(gc));
         entities.forEach(g -> g.render(gc));
+        oneals.forEach(g -> g.render(gc));
     }
 }
