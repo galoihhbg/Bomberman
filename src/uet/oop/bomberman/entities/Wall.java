@@ -11,7 +11,7 @@ public class Wall extends Entity {
     }
 
     @Override
-    public void update(Scene scene, GraphicsContext gc, int[][] tile) {
+    public void update(Scene scene, GraphicsContext gc, Tile[][] tile) {
 
     }
 }

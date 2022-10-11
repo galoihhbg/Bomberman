@@ -1,11 +1,8 @@
 package uet.oop.bomberman.entities;
 
-import javafx.scene.SnapshotParameters;
+import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
-import javafx.scene.*;
 import uet.oop.bomberman.graphics.Sprite;
 
 public abstract class Entity {
@@ -27,5 +24,5 @@ public abstract class Entity {
     public void render(GraphicsContext gc) {
         gc.drawImage(img, x, y);
     }
-    public abstract void update(Scene scene, GraphicsContext gc, int[][] tile);
+    public abstract void update(Scene scene, GraphicsContext gc, Tile[][] tile);
 }
