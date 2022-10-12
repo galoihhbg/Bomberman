@@ -1,8 +1,11 @@
 package uet.oop.bomberman;
 
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -117,6 +120,28 @@ public class BombermanGame extends Application {
     }
   
     public void createMap() {
+        FileReader fr = null;
+        String line;
+        char[][] map = new char[HEIGHT][WIDTH];
+        int row;
+        int column;
+        try {
+            fr = new FileReader("res\\levels\\Level1.txt");
+            BufferedReader br = new BufferedReader(fr);
+            line = br.readLine();
+            String parts[] = line.split(" ");
+            row = Integer.parseInt(parts[1]);
+            column = Integer.parseInt(parts[2]);
+            for (int i = 0; i < row; i++) {
+                line = br.readLine();
+                for (int j = 0; j < column; j++) {
+                    map[i][j] = line.charAt(j);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         for (int i = 0; i < WIDTH; i++) {
             for (int j = 0; j < HEIGHT; j++) {
                 Entity object;
