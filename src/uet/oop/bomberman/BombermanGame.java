@@ -126,7 +126,7 @@ public class BombermanGame extends Application {
         int row;
         int column;
         try {
-            fr = new FileReader("res\\levels\\Level1.txt");
+            fr = new FileReader("res\\levels\\Level1.txt"); // Cần đổi đường dẫn khi chuyển level
             BufferedReader br = new BufferedReader(fr);
             line = br.readLine();
             String parts[] = line.split(" ");
