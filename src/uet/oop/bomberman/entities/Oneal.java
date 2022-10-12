@@ -1,6 +1,7 @@
 package uet.oop.bomberman.entities;
 
 import java.util.List;
+import java.util.Random;
 
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
@@ -23,13 +24,14 @@ public class Oneal extends Entity{
 	private int frame;
 	private int speed;
 	private boolean[] choice;
+	private Random random = new Random();
 	
 	public Oneal(int xUnit, int yUnit, Image img) {
 		super(xUnit, yUnit, img);
 		this.setxUnit(xUnit);
 		this.setyUnit(yUnit);
-		this.setSpeed(4);
-		setOrient(0);
+		this.setSpeed(2);
+		setOrient(random.nextInt(4));
 		this.frame = 0;
 		this.isAlive = true;
 	}
@@ -99,15 +101,20 @@ public class Oneal extends Entity{
 								orient = 3 - orient;
 								canMove = true;
 							} else {
-								if (choice[1]) {
-									orient = 1;
-									canMove = true;
+								if (!choice[1] && !choice[2]) {
+									canMove = false;
 								} else {
-									if (choice[2]) {
-										orient = 2;
+									if (choice[1] && choice[2]) {
+										orient = random.nextInt(2) + 1;
 										canMove = true;
 									} else {
-										canMove= false;
+										if (choice[1]) {
+											orient = 1;
+											canMove = true;
+										} else {
+											orient = 2;
+											canMove = true;
+										}
 									}
 								}
 							}
@@ -126,15 +133,24 @@ public class Oneal extends Entity{
 								orient = 3 - orient;
 								canMove = true;
 							} else {
-								if (choice[0]) {
-									orient = 0;
-									canMove = true;
+								if (!choice[0] && !choice[3]) {
+									canMove = false;
 								} else {
-									if (choice[3]) {
-										orient = 3;
+									if (choice[0] && choice[3]) {
+										if (random.nextInt(2) %2 == 0) {
+											orient = 0;
+										} else {
+											orient = 3;
+										}
 										canMove = true;
 									} else {
-										canMove = false;
+										if (choice[0]) {
+											orient = 0;
+											canMove = true;
+										} else {
+											orient = 3;
+											canMove = true;
+										}
 									}
 								}
 							}
@@ -183,20 +199,20 @@ public class Oneal extends Entity{
 	}
 	public void moveToCell(int x, int y) {
 		if (x * Sprite.SCALED_SIZE < this.x && this.y % Sprite.SCALED_SIZE == 0) {
-			this.x -= 2;
+			this.x -= 4;
 			return;
 		}
 		if (x * Sprite.SCALED_SIZE > this.x && this.y % Sprite.SCALED_SIZE == 0) {
-			this.x +=2;
+			this.x +=4;
 			return;
 		}
 		
 		if (y * Sprite.SCALED_SIZE> this.y) {
-			this.y +=2;
+			this.y +=4;
 			return;
 		}
 		if (y * Sprite.SCALED_SIZE< this.y) {
-			this.y -=2;
+			this.y -=4;
 			return;
 		}
 	}

@@ -38,16 +38,16 @@ public class Tile {
     		return true;
     	}
     	found[srcX][srcY] = true;
-    	if (!found[srcX][srcY-1] && srcX >= 1 && srcX <= Const.HEIGHT && srcY-1 >=1 && srcY-1 <= Const.WIDTH && tile[srcX][srcY-1].code  != Tile_Code.WALL && tile[srcX][srcY-1].code != Tile_Code.BRICK) {
+    	if (!found[srcX][srcY-1] && srcX >= 1 && srcX <= Const.HEIGHT-2 && srcY-1 >=1 && srcY-1 <= Const.WIDTH-2 && tile[srcX][srcY-1].code  != Tile_Code.WALL && tile[srcX][srcY-1].code != Tile_Code.BRICK && tile[srcX][srcY-1].code != Tile_Code.BOMB) {
     		if (isConnected(tile, srcX, srcY-1, desX, desY, found)) return true;
     	} 
-    	if (!found[srcX][srcY+1] && srcX >= 1 && srcX <= Const.HEIGHT && srcY+1 >=1 && srcY+1 <= Const.WIDTH && tile[srcX][srcY+1].code  != Tile_Code.WALL && tile[srcX][srcY+1].code != Tile_Code.BRICK) {
+    	if (!found[srcX][srcY+1] && srcX >= 1 && srcX <= Const.HEIGHT-2 && srcY+1 >=1 && srcY+1 <= Const.WIDTH-2 && tile[srcX][srcY+1].code  != Tile_Code.WALL && tile[srcX][srcY+1].code != Tile_Code.BRICK && tile[srcX][srcY+1].code != Tile_Code.BOMB) {
     		if (isConnected(tile, srcX, srcY+1, desX, desY, found)) return true;
     	} 
-    	if (!found[srcX + 1][srcY] && srcX + 1 >= 1 && srcX + 1<= Const.HEIGHT && srcY>=1 && srcY-1 <= Const.WIDTH && tile[srcX + 1][srcY].code  != Tile_Code.WALL && tile[srcX + 1][srcY].code != Tile_Code.BRICK) {
+    	if (!found[srcX + 1][srcY] && srcX + 1 >= 1 && srcX + 1<= Const.HEIGHT-2 && srcY>=1 && srcY-1 <= Const.WIDTH-2 && tile[srcX + 1][srcY].code  != Tile_Code.WALL && tile[srcX + 1][srcY].code != Tile_Code.BRICK && tile[srcX + 1][srcY].code != Tile_Code.BOMB) {
     		if (isConnected(tile, srcX + 1, srcY, desX, desY, found)) return true;;
     	} 
-    	if (!found[srcX - 1][srcY] && srcX -1 >= 1 && srcX - 1 <= Const.HEIGHT && srcY>=1 && srcY <= Const.WIDTH && tile[srcX - 1][srcY].code  != Tile_Code.WALL && tile[srcX - 1][srcY].code != Tile_Code.BRICK) {
+    	if (!found[srcX - 1][srcY] && srcX -1 >= 1 && srcX - 1 <= Const.HEIGHT-2 && srcY>=1 && srcY <= Const.WIDTH-2 && tile[srcX - 1][srcY].code  != Tile_Code.WALL && tile[srcX - 1][srcY].code != Tile_Code.BRICK && tile[srcX - 1][srcY].code != Tile_Code.BOMB) {
     		if (isConnected(tile, srcX - 1, srcY, desX, desY, found)) return true;
     	} 
     	
@@ -58,15 +58,15 @@ public class Tile {
     	LinkedList<Pair<Integer, Integer>> path = new LinkedList<Pair<Integer, Integer>>();
         Pair<Integer, Integer>[][] prev = new Pair[Const.HEIGHT][Const.WIDTH];
 		boolean[][] found = new boolean[Const.HEIGHT][Const.WIDTH];
-		for (int i = 0; i < Const.HEIGHT ; i++) {
-			for (int j = 0; j < Const.WIDTH; j++) {
+		for (int i = 0; i < Const.HEIGHT-1 ; i++) {
+			for (int j = 0; j < Const.WIDTH-1; j++) {
                 found[i][j] = false;
 			}
 		}
 		boolean isConnected = true;
 		int[][] minDist = new int[Const.HEIGHT][Const.WIDTH];
-		for (int i = 1; i < Const.HEIGHT; i++) {
-			for (int j = 1; j < Const.WIDTH; j++) {
+		for (int i = 1; i < Const.HEIGHT -1; i++) {
+			for (int j = 1; j < Const.WIDTH -1; j++) {
                 minDist[i][j] = Integer.MAX_VALUE;
 			}
 		}
@@ -77,7 +77,7 @@ public class Tile {
 			int dist = Integer.MAX_VALUE;
 			for (int i = 1; i < Const.HEIGHT-1; i++) {
 				for (int j = 1; j < Const.WIDTH-1; j++) {
-					if (tile[i][j].code  != Tile_Code.WALL && tile[i][j].code != Tile_Code.BRICK && !found[i][j] && minDist[i][j] < dist) {
+					if (tile[i][j].code  != Tile_Code.WALL && tile[i][j].code != Tile_Code.BRICK && tile[i][j].code != Tile_Code.BOMB && !found[i][j] && minDist[i][j] < dist) {
 						dist = minDist[i][j];
 						x = i;
 						y = j;
@@ -85,44 +85,36 @@ public class Tile {
 				}
 			}
 			found[x][y] = true;
-			isChecked +=1;
-			//System.out.println(x+" "+y);
 			if (x == desX && y == desY) {
 				break;
 			}
-			//isConnected = false;
-			if (tile[x][y-1].code  != Tile_Code.WALL && tile[x][y-1].code != Tile_Code.BRICK) {
+			if (tile[x][y-1].code  != Tile_Code.WALL && tile[x][y-1].code != Tile_Code.BRICK && tile[x][y-1].code != Tile_Code.BOMB) {
 				if (minDist[x][y-1] > minDist[x][y] + 1) {
 					minDist[x][y-1] = minDist[x][y] + 1;
 					prev[x][y-1] = new Pair<Integer, Integer>(x,y);
  				}
-				//isConnected = true;
 			} 
-			if (tile[x-1][y].code  != Tile_Code.WALL && tile[x-1][y].code != Tile_Code.BRICK) {
+			if (tile[x-1][y].code  != Tile_Code.WALL && tile[x-1][y].code != Tile_Code.BRICK && tile[x-1][y].code != Tile_Code.BOMB) {
 				if (minDist[x-1][y] > minDist[x][y] + 1) {
 					minDist[x-1][y] = minDist[x][y] + 1;
 					prev[x-1][y] = new Pair<Integer, Integer>(x,y);
 					
  				}
-				//isConnected = true;
 			}
-			if (tile[x][y+1].code  != Tile_Code.WALL && tile[x][y+1].code != Tile_Code.BRICK) {
+			if (tile[x][y+1].code  != Tile_Code.WALL && tile[x][y+1].code != Tile_Code.BRICK && tile[x][y + 1].code != Tile_Code.BOMB) {
 				if (minDist[x][y+1] > minDist[x][y] + 1) {
 					minDist[x][y+1] = minDist[x][y] + 1;
 					prev[x][y+1] = new Pair<Integer, Integer>(x,y);
 					
  				}
-				//isConnected = true;
 			}
-			if (tile[x+1][y].code  != Tile_Code.WALL && tile[x +1][y-1].code != Tile_Code.BRICK) {
+			if (tile[x+1][y].code  != Tile_Code.WALL && tile[x +1][y].code != Tile_Code.BRICK && tile[x+1][y].code != Tile_Code.BOMB) {
 				if (minDist[x+1][y] > minDist[x][y] + 1) {
 					minDist[x+1][y] = minDist[x][y] + 1;
 					prev[x+1][y] = new Pair<Integer, Integer>(x,y);
 					
  				}
-				//isConnected = true;
 			}
-			//if (!isConnected) break;
 		}
 		int desXX = desX, desYY = desY;
 		path.addFirst(new Pair<Integer, Integer>(desX, desY));

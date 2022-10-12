@@ -11,5 +11,5 @@ public class Const {
 	}
 	
 	public static final int WIDTH = 31;
-	public static final int HEIGHT = 15;
+	public static final int HEIGHT = 13;
 }

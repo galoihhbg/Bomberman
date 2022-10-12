@@ -20,7 +20,19 @@ public abstract class Entity {
         this.y = yUnit * Sprite.SCALED_SIZE;
         this.img = img;
     }
-
+    
+    public int getX() {
+    	return this.x;
+    }
+    public void setX(int xUnit) {
+    	this.x = xUnit * Sprite.SCALED_SIZE;
+    }
+    public void setY(int yUnit) {
+    	this.y = yUnit * Sprite.SCALED_SIZE;
+    }
+    public int getY() {
+    	return this.y;
+    }
     public void render(GraphicsContext gc) {
         gc.drawImage(img, x, y);
     }

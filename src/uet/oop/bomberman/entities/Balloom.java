@@ -1,5 +1,7 @@
 package uet.oop.bomberman.entities;
 
+import java.util.Random;
+
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -18,12 +20,13 @@ public class Balloom extends Entity{
 	private int frame;
 	private int speed;
 	private boolean[] choice;
+	Random random = new Random();
 
 	public Balloom(int xUnit, int yUnit, Image img) {
 		super(xUnit, yUnit, img);
 		setxUnit(xUnit);
 		setyUnit(yUnit);
-		setOrient(0);
+		setOrient(random.nextInt(4));
 		this.frame = 0;
 		this.isAlive = true;
 		this.speed = 3;
@@ -108,15 +111,20 @@ public class Balloom extends Entity{
 								orient = 3 - orient;
 								canMove = true;
 							} else {
-								if (choice[1]) {
-									orient = 1;
-									canMove = true;
+								if (!choice[1] && !choice[2]) {
+									canMove = false;
 								} else {
-									if (choice[2]) {
-										orient = 2;
+									if (choice[1] && choice[2]) {
+										orient = random.nextInt(2) + 1;
 										canMove = true;
 									} else {
-										canMove= false;
+										if (choice[1]) {
+											orient = 1;
+											canMove = true;
+										} else {
+											orient = 2;
+											canMove = true;
+										}
 									}
 								}
 							}
@@ -135,15 +143,24 @@ public class Balloom extends Entity{
 								orient = 3 - orient;
 								canMove = true;
 							} else {
-								if (choice[0]) {
-									orient = 0;
-									canMove = true;
+								if (!choice[0] && !choice[3]) {
+									canMove = false;
 								} else {
-									if (choice[3]) {
-										orient = 3;
+									if (choice[0] && choice[3]) {
+										if (random.nextInt(2) %2 == 0) {
+											orient = 0;
+										} else {
+											orient = 3;
+										}
 										canMove = true;
 									} else {
-										canMove = false;
+										if (choice[0]) {
+											orient = 0;
+											canMove = true;
+										} else {
+											orient = 3;
+											canMove = true;
+										}
 									}
 								}
 							}
