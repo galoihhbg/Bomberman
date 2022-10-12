@@ -9,6 +9,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 import uet.oop.bomberman.constants.Const.Tile_Code;
@@ -36,6 +37,10 @@ public class BombermanGame extends Application {
     
     public Tile[][] tile = new Tile[HEIGHT][WIDTH];
 
+    // fps counting purpose
+    private final long[] frameTimes = new long[100];
+    private int frameTimeIndex = 0;
+    private boolean check = false;
 
     public static void main(String[] args) {
         Application.launch(BombermanGame.class);
@@ -59,9 +64,33 @@ public class BombermanGame extends Application {
         stage.setScene(scene);
         stage.show();
 
+        // Text fps
+        Text fps = new Text();
+        fps.setX(1);
+        fps.setY(1);
+
+
+
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
+                //Show fps
+                long oldFrameTime = frameTimes[frameTimeIndex] ;
+                frameTimes[frameTimeIndex] = l ;
+                frameTimeIndex = (frameTimeIndex + 1) % 100 ;
+                if (frameTimeIndex == 0) {
+                    check = true ;
+                }
+                if (check) {
+                    long nanosPassed = l - oldFrameTime ;
+                    long nanosPerFrame = nanosPassed / 100 ;
+                    double frameRate = 1_000_000_000.0 / nanosPerFrame ;
+                    System.out.println(frameRate);
+                    fps.setText(String.valueOf(frameRate));
+                    // fps là dạng text show fps
+                    // chưa được render vào scene hay stage.
+                }
+
                 try {
                 	render();
                     update(scene, gc, tile);
@@ -70,6 +99,8 @@ public class BombermanGame extends Application {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+
+
            }
                 
         };
