@@ -7,6 +7,15 @@ import uet.oop.bomberman.constants.Const;
 import uet.oop.bomberman.constants.Const.Tile_Code;
 import uet.oop.bomberman.graphics.Sprite;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Scanner;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 public class Bomb extends Entity{
 	private int xUnit;
 	private int yUnit;
@@ -56,6 +65,16 @@ public class Bomb extends Entity{
     	return this.isExploded;
     }
 
+	public void playSound() {
+		try {
+			AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("res/Music/Bomb.wav").getAbsoluteFile());
+			Clip clip = AudioSystem.getClip();
+			clip.open(audioInputStream);
+			clip.start();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 	@Override
 	public void update(Scene scene, GraphicsContext gc, Tile[][] tile) {
 		if (tile[yUnit][xUnit].getCode() == Tile_Code.FLAME) {
@@ -104,6 +123,7 @@ public class Bomb extends Entity{
 			
 		}
 		if (isExploded) {
+			playSound();
 			tile[yUnit][xUnit].setCode(Const.Tile_Code.GRASS);
 			for (int i = 1; i <= explosion_range; i++) {
 				if (xUnit + i < Const.WIDTH && tile[yUnit][xUnit + i].getCode() != Const.Tile_Code.WALL) {
@@ -139,10 +159,8 @@ public class Bomb extends Entity{
 				} else break;
 			}	
 		}
-		
-		
-		
-		
+
+
 	}
 
 	public int getCountToExplode() {

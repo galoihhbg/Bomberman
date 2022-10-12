@@ -1,5 +1,6 @@
 package uet.oop.bomberman;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,10 @@ import uet.oop.bomberman.entities.Wall;
 import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.entities.Balloom;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+
 public class BombermanGame extends Application {
     
     public static final int WIDTH = 31;
@@ -45,7 +50,8 @@ public class BombermanGame extends Application {
     public static void main(String[] args) {
         Application.launch(BombermanGame.class);
     }
-    
+
+
     
     @Override
     public void start(Stage stage) {
@@ -84,8 +90,7 @@ public class BombermanGame extends Application {
                 if (check) {
                     long nanosPassed = l - oldFrameTime ;
                     long nanosPerFrame = nanosPassed / 100 ;
-                    double frameRate = 1_000_000_000.0 / nanosPerFrame ;
-                    System.out.println(frameRate);
+                    double frameRate = 1_000_000_000.0 / nanosPerFrame;
                     fps.setText(String.valueOf(frameRate));
                     // fps là dạng text show fps
                     // chưa được render vào scene hay stage.
@@ -107,6 +112,8 @@ public class BombermanGame extends Application {
         timer.start();
         
         createMap();
+
+        playSound();
     }
   
     public void createMap() {
@@ -167,5 +174,16 @@ public class BombermanGame extends Application {
         enemies.forEach(g -> g.render(gc));
         entities.forEach(g -> g.render(gc));
         oneals.forEach(g -> g.render(gc));
+    }
+
+    public void playSound() {
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("res/Music/Theme.wav").getAbsoluteFile());
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }
